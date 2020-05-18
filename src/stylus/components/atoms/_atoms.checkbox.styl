@@ -1,0 +1,44 @@
+.a-checkbox 
+    display flex
+    flex-direction row
+    align-items center
+    position relative
+    margin-bottom 12px
+    cursor pointer
+    -webkit-user-select none
+    -moz-user-select none
+    -ms-user-select none
+    user-select none
+    
+    &__label
+        font-size fs-14
+        font-weight 500
+        color black_90
+        margin 0
+        padding 0
+        padding-left 10px
+        
+    input 
+        position absolute
+        opacity 0
+        cursor pointer
+        height 0
+        width 0
+
+    &__checkmark
+        height 20px
+        width 20px
+        border 2px solid success
+        display flex
+        justify-content center
+        align-items center
+        transition all 0.2s
+        background-color white
+
+        .icon--check
+            width 18px
+            height 18px
+        
+.a-checkbox:hover
+    .a-checkbox__checkmark
+        background grey_2

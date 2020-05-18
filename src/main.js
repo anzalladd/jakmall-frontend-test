@@ -7,6 +7,9 @@ import store from "./store";
 // mixins
 import mxGlobal from "@/mixins/mxGlobal";
 
+// plugins
+import "@/plugins/Vuelidate";
+
 // styles
 import "@/stylus/index.styl";
 
