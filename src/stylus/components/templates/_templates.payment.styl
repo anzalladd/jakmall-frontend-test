@@ -1,0 +1,38 @@
+.t-wrapper
+    height calc(100vh - 150px)
+    padding 55px 50px 95px 50px
+    background-color #FFFAE6
+
+    &__main
+        background-color white
+        height 100%
+
+        &__stepper
+            display flex
+            justify-content center
+            position relative
+            bottom 55px
+        
+        &__back
+            margin-top -50px
+            margin-left 40px
+
+        &__wrapper
+            display flex
+            margin-top 22px
+
+            &__payment
+                padding 10px 30px 10px 40px
+                flex 75%
+            &__summary
+                padding 10px 20px 20px 20px
+                border-left 1px solid primary_opacity
+                flex 25%
+
+@media screen and (max-width: break-point-lg)
+    .t-wrapper
+        padding 0px
+
+        &__main
+            &__stepper
+                bottom 0
