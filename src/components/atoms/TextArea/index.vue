@@ -1,18 +1,17 @@
 <template>
-  <div class="a-input" :class="inputClasses">
-    <label for="a-input__input" @click="!disable ? setFocus() : ''">{{
-      text
-    }}</label>
-    <input
+  <div class="a-text-area" :class="inputClasses">
+    <label for="a-text-area__input" @click="setFocus">{{ text }}</label>
+    <textarea
       v-bind="$attrs"
+      class="a-text-area__input"
       :value="value"
       @input="updateValue($event.target.value)"
       @focus="onFocus"
       @blur="onBlur"
-      :disabled="disable"
-      ref="inputCustom"
-    />
-    <img :src="icon" alt="icon" v-if="isHaveFilled" class="input--icon" />
+      ref="textAreaCustom"
+      :maxlength="max"
+    ></textarea>
+    <p class="a-text-area__counter">{{ counter }}/{{ max }}</p>
   </div>
 </template>
 
@@ -31,9 +30,9 @@ export default {
       type: Object,
       required: true,
     },
-    disable: {
-      type: Boolean,
-      default: false,
+    max: {
+      type: Number,
+      default: 50,
     },
   },
 
@@ -58,12 +57,11 @@ export default {
       if (this.isHaveFilled) {
         classes = { success: !this.v.$error, error: this.v.$error };
       }
-      return [
-        { active: this.isFocus },
-        { hasError: this.v.$error },
-        { disabled: this.disable },
-        classes,
-      ];
+      return [{ active: this.isFocus }, { hasError: this.v.$error }, classes];
+    },
+
+    counter() {
+      return this.value.length;
     },
   },
 
@@ -73,12 +71,12 @@ export default {
       this.$emit("input", value);
     },
 
-    setFocus() {
-      this.$nextTick(() => this.$refs.inputCustom.focus());
-    },
-
     onFocus() {
       this.isFocus = true;
+    },
+
+    setFocus() {
+      this.$nextTick(() => this.$refs.textAreaCustom.focus());
     },
 
     onBlur() {

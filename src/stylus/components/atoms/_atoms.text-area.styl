@@ -1,23 +1,17 @@
-.a-input
+.a-text-area
     display inline-block
     border 1px solid grey
     padding 4px 15px 4px
     position relative
 
-    &.disabled
-        background-color grey_2
-
-        input 
-            background-color grey_2
-
-    input
+    &__input
         border none
         outline 0
         font-size fs-16
         padding 16px 0 16px
         margin-top 5px
-        width 90%
-
+        width 100%
+    
     label
         font-size fs-16
         color rgba(0,0,0,0.4)
@@ -27,21 +21,23 @@
         transition all .1s ease-in-out;  //speed
         font-weight bold
         cursor text
-
-    &.active
+    
+     &.active
         
         label
             transform translate(0, 4px) scale(.75);
 
     &.success
         border-color success
-
+        p
+            color success
         label
             color success
             
     &.error
         border-color primary
-
+        p
+            color primary
         label
             color primary
     
@@ -52,3 +48,12 @@
         position absolute
         right 15px
         top 21px
+    
+    &__counter
+        margin: 0
+        font-size fs-14
+        position absolute
+        bottom 10px
+        right 10px
+        color rgba(0,0,0,0.4)
+        font-weight 500

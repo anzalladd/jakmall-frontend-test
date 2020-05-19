@@ -17,17 +17,35 @@
             margin-top -50px
             margin-left 40px
 
+        @media screen and (max-width: break-point-lg)
+            &__back
+                margin-top 20px
+                margin-left 20px
+
         &__wrapper
             display flex
             margin-top 22px
+            height calc(100% - 140px)
 
             &__payment
                 padding 10px 30px 10px 40px
-                flex 75%
+                flex 70%
+
             &__summary
-                padding 10px 20px 20px 20px
+                padding 10px 20px 0 20px
                 border-left 1px solid primary_opacity
-                flex 25%
+                flex 30%
+            
+            @media screen and (max-width: break-point-lg)
+                flex-wrap wrap
+                &__payment
+                    padding 10px 20px 0 20px
+                    flex 100%
+
+                &__summary
+                    flex 100%
+                    margin-top 36px
+                    padding 10px 20px 20px 20px
 
 @media screen and (max-width: break-point-lg)
     .t-wrapper
