@@ -96,6 +96,7 @@
               color="#FF8A00"
               isDark
               :onClick="() => submitForm()"
+              v-if="currentStepPayment != 3"
             />
           </div>
         </div>
