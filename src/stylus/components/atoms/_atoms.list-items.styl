@@ -1,0 +1,39 @@
+.a-list-items
+    display flex
+    &__item
+        cursor pointer
+        display flex
+        align-items center
+        flex 33%
+        padding 12px 15px
+        margin-right 10px
+        justify-content space-between
+        border 1px solid grey
+        min-height 63px
+
+        &.active
+            border 1px solid success
+            background-color #E8FBF2
+
+        &__text
+            &__title
+                font-size fs-13
+                font-weight medium
+                color rgba(0,0,0,0.6)
+                margin 0
+            &__price
+                font-size fs-16
+                font-weight bold
+                color rgba(0,0,0,0.6)
+                margin-top 5px
+                margin-bottom 0
+    
+    @media screen and (max-width: break-point-lg)
+        flex-wrap wrap
+        &__item
+            flex 100%
+            margin-bottom 10px
+            margin-right 0
+            
+
+        

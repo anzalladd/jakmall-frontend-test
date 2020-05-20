@@ -1,3 +1,3 @@
 export default {
-  currentStepPayment: 1,
+  currentStepPayment: 2,
 };

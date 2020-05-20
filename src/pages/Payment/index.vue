@@ -2,13 +2,29 @@
   <div class="p-payment">
     <payment-template :dataStepper="dataStep" :currentStep="currentStepPayment">
       <template v-slot:back>
-        <BackButton text="Back to cart" />
+        <BackButton text="Back to cart" v-if="currentStepPayment == 1" />
+        <BackButton
+          text="Back to Delivery"
+          v-if="currentStepPayment == 2"
+          :onClick="() => backToDelivery()"
+        />
       </template>
       <template v-slot:payment>
         <Step1
           :data="form.details"
           @updateValueCheckbox="(e) => updateDropShipper(e)"
           ref="step1"
+          v-if="currentStepPayment === 1"
+        />
+        <Step2
+          :data="form.shipment"
+          v-if="currentStepPayment === 2"
+          :itemsShipment="dataShipment"
+          :selectedShipment="form.shipment.selectedShipment"
+          :onChangeShipment="(id) => onChangeShipment(id)"
+          :itemsPayment="dataPayment"
+          :selectedPayment="form.shipment.selectedPayment"
+          :onChangePayment="(id) => onChangePayment(id)"
         />
       </template>
       <template v-slot:summary>
@@ -18,6 +34,25 @@
             <p class="text--regular u-mt-10">
               {{ renderTextItems(form.details.items) }}
             </p>
+            <div
+              class="p-payment__summary__item__shipment"
+              v-if="currentStepPayment > 1"
+            >
+              <p class="text--regular">Delivery estimation</p>
+              <p class="text--16-success-medium u-mt-6">
+                {{ dataShipment[form.shipment.selectedShipment].estimate }} by
+                {{ dataShipment[form.shipment.selectedShipment].title }}
+              </p>
+            </div>
+            <div
+              class="p-payment__summary__item__shipment"
+              v-if="currentStepPayment > 1"
+            >
+              <p class="text--regular">Payment method</p>
+              <p class="text--16-success-medium u-mt-6">
+                {{ dataPayment[form.shipment.selectedPayment].title }}
+              </p>
+            </div>
           </div>
           <div class="p-payment__summary__cost">
             <div class="payment--wrapper">
@@ -32,6 +67,19 @@
                 {{ currencyFilter(form.details.dropshipperFee) }}
               </p>
             </div>
+            <div class="payment--wrapper" v-if="currentStepPayment > 1">
+              <p class="payment--wrapper__title">
+                <b> {{ dataShipment[form.shipment.selectedShipment].title }}</b>
+                shipment
+              </p>
+              <p class="payment--wrapper__value">
+                {{
+                  currencyFilter(
+                    dataShipment[form.shipment.selectedShipment].price
+                  )
+                }}
+              </p>
+            </div>
             <div class="payment--wrapper">
               <p class="payment--wrapper__title big--title">Total</p>
               <p class="payment--wrapper__value big--title">
@@ -39,7 +87,7 @@
               </p>
             </div>
             <Button
-              text="Pay with e-Wallet"
+              text="Continue to Payment"
               color="#FF8A00"
               isDark
               :onClick="() => submitForm()"
@@ -55,14 +103,16 @@
 import PaymentTemplate from "@/components/templates/Payment";
 import BackButton from "@/components/atoms/BackButton";
 import Step1 from "@/components/organism/Step1_Payment";
+import Step2 from "@/components/organism/Step2_Payment";
 import Button from "@/components/atoms/Button";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
     PaymentTemplate,
     BackButton,
     Step1,
+    Step2,
     Button,
   },
 
@@ -82,7 +132,7 @@ export default {
         },
         shipment: {
           selectedShipment: 0,
-          payment: 0,
+          selectedPayment: 0,
         },
       },
     };
@@ -92,36 +142,26 @@ export default {
     ...mapState("Payment", ["currentStepPayment"]),
 
     totalCost() {
+      let shipmentCost = 0;
+      if (this.currentStepPayment > 1) {
+        shipmentCost = this.dataShipment[this.form.shipment.selectedShipment]
+          .price;
+      }
       return (
-        this.form.details.dropshipperFee +
-        this.form.details.cost +
-        this.form.shipment.payment
+        this.form.details.dropshipperFee + this.form.details.cost + shipmentCost
       );
     },
   },
 
   methods: {
+    ...mapActions("Payment", ["incrementStep", "decrementStep"]),
+
     renderTextItems(items) {
       if (items > 1) {
         return `${items} items purchased`;
       } else {
         return `${items} item purchased`;
       }
-    },
-
-    currencyFilter(value) {
-      const formatter = new Intl.NumberFormat("id", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      });
-
-      const number = formatter.format(value);
-
-      return number
-        .replace(".", ",")
-        .replace("Rp", "")
-        .trim();
     },
 
     updateDropShipper(e) {
@@ -136,11 +176,22 @@ export default {
 
     submitForm() {
       this.$refs.step1.$v.data.$touch();
-
       if (this.$refs.step1.$v.data.$pending || this.$refs.step1.$v.data.$error)
         return;
 
-      console.log("wkwk");
+      this.incrementStep();
+    },
+
+    backToDelivery() {
+      this.decrementStep();
+    },
+
+    onChangeShipment(id) {
+      this.form.shipment.selectedShipment = id;
+    },
+
+    onChangePayment(id) {
+      this.form.shipment.selectedPayment = id;
     },
   },
 };
