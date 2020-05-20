@@ -8,7 +8,12 @@ export const decrementStep = ({ commit }) => {
   commit(types.DECREMENT_STEP);
 };
 
+export const goToPage = ({ commit }, value) => {
+  commit(types.GO_TO_PAGE, value);
+};
+
 export default {
   incrementStep,
   decrementStep,
+  goToPage,
 };

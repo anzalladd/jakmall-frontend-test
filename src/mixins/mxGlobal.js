@@ -31,5 +31,13 @@ export default {
     dataPayment() {
       return DataPayment;
     },
+
+    randomString() {
+      let result = "";
+      let chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+      for (let i = 5; i > 0; --i)
+        result += chars[Math.floor(Math.random() * chars.length)];
+      return result;
+    },
   },
 };

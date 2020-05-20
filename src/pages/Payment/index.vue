@@ -26,6 +26,11 @@
           :selectedPayment="form.shipment.selectedPayment"
           :onChangePayment="(id) => onChangePayment(id)"
         />
+        <Step3
+          v-if="currentStepPayment === 3"
+          :selectedShipment="form.shipment.selectedShipment"
+          :onClickHomePage="() => onClickHomePage()"
+        />
       </template>
       <template v-slot:summary>
         <div class="p-payment__summary">
@@ -104,6 +109,7 @@ import PaymentTemplate from "@/components/templates/Payment";
 import BackButton from "@/components/atoms/BackButton";
 import Step1 from "@/components/organism/Step1_Payment";
 import Step2 from "@/components/organism/Step2_Payment";
+import Step3 from "@/components/organism/Step3_Payment";
 import Button from "@/components/atoms/Button";
 import { mapState, mapActions } from "vuex";
 
@@ -113,6 +119,7 @@ export default {
     BackButton,
     Step1,
     Step2,
+    Step3,
     Button,
   },
 
@@ -153,8 +160,31 @@ export default {
     },
   },
 
+  created() {
+    let form = JSON.parse(localStorage.getItem("form"));
+    let currentStep = parseInt(localStorage.getItem("currentStepPayment"));
+    if (form) {
+      this.form = form;
+    }
+    if (currentStep) {
+      this.goToPage(currentStep);
+    }
+  },
+
+  watch: {
+    form: {
+      handler(value) {
+        localStorage.setItem("form", JSON.stringify(value));
+      },
+      deep: true,
+    },
+    currentStepPayment(value) {
+      localStorage.setItem("currentStepPayment", value);
+    },
+  },
+
   methods: {
-    ...mapActions("Payment", ["incrementStep", "decrementStep"]),
+    ...mapActions("Payment", ["incrementStep", "decrementStep", "goToPage"]),
 
     renderTextItems(items) {
       if (items > 1) {
@@ -175,9 +205,14 @@ export default {
     },
 
     submitForm() {
-      this.$refs.step1.$v.data.$touch();
-      if (this.$refs.step1.$v.data.$pending || this.$refs.step1.$v.data.$error)
-        return;
+      if (this.currentStepPayment === 1) {
+        this.$refs.step1.$v.data.$touch();
+        if (
+          this.$refs.step1.$v.data.$pending ||
+          this.$refs.step1.$v.data.$error
+        )
+          return;
+      }
 
       this.incrementStep();
     },
@@ -192,6 +227,28 @@ export default {
 
     onChangePayment(id) {
       this.form.shipment.selectedPayment = id;
+    },
+
+    onClickHomePage() {
+      localStorage.removeItem("form");
+      this.form = {
+        details: {
+          name: "",
+          phone_number: "",
+          delivery_address: "",
+          dropshipper_name: "",
+          dropshipper_phone_number: "",
+          isDropshipper: false,
+          dropshipperFee: 0,
+          items: 10,
+          cost: 500000,
+        },
+        shipment: {
+          selectedShipment: 0,
+          selectedPayment: 0,
+        },
+      };
+      this.goToPage(1);
     },
   },
 };
